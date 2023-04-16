@@ -39,18 +39,12 @@ class User(AbstractUser):
     bio = models.TextField('Биография', null=True, blank=True)
     # first_name = models.CharField('Имя', max_length=150)
 
-    # USERNAME_FIELD = 'email'
-    # REQUIRED_FIELDS = ['username']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
     class Meta:
         ordering = ('id',)
         verbose_name = 'пользователь'
-        # constraints = (
-        #     models.UniqueConstraint(
-        #         fields=('username', 'email'),
-        #         name='unique_username_email'
-        #     ),
-        # )
 
     def __str__(self):
         return self.username
