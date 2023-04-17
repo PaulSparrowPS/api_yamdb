@@ -8,8 +8,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-
-
+from api.permissions import IsAdmin
 from .models import User
 from .serializers import (
     ConfirmationCodeSerializer,
@@ -73,19 +72,20 @@ def auth_token(request):
 
 class UsersViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
-    # permission_classes = (IsAdmin,)
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    permission_classes = [IsAdmin]
     lookup_field = 'username'
     queryset = User.objects.all()
-    search_fields = ('username',)
-    ordering = ('username',)
+    search_fields = ['username']
+    ordering = ['username']
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     @action(
         detail=False,
-        methods=(
-            'get',
-            'patch',
-        ),
+        methods=[
+            'GET',
+            'PATCH',
+        ],
         serializer_class=UserMeSerializer,
         permission_classes=[permissions.IsAuthenticated],
     )

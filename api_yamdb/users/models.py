@@ -8,11 +8,11 @@ class User(AbstractUser):
     MODERATOR = 'moderator'
     USER = 'user'
 
-    USER_ROLES = (
+    USER_ROLES = [
         (ADMIN, 'Администратор'),
         (MODERATOR, 'Модератор'),
         (USER, 'Пользователь'),
-    )
+    ]
     username = models.CharField(
         'Имя пользователя',
         max_length=150,
@@ -37,13 +37,20 @@ class User(AbstractUser):
         choices=USER_ROLES, default=USER
     )
     bio = models.TextField('Биография', null=True, blank=True)
-    # first_name = models.CharField('Имя', max_length=150)
+
+    @property
+    def is_moderator(self):
+        return self.role == self.MODERATOR
+
+    @property
+    def is_admin(self):
+        return self.role == self.ADMIN or self.is_superuser or self.is_staff
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
     class Meta:
-        ordering = ('id',)
+        ordering = ['id']
         verbose_name = 'пользователь'
 
     def __str__(self):

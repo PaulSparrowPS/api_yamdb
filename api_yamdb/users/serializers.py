@@ -20,7 +20,7 @@ class SignupSerializer(serializers.Serializer):
     def validate(self, data):
         if data.get('username') == 'me':
             raise serializers.ValidationError(
-                'Использовать имя пользоватея <me> запрещено'
+                'Использовать имя пользоватея <me> запрещено!'
             )
         return data
 
@@ -33,14 +33,14 @@ class ConfirmationCodeSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = (
+        fields = [
             'username',
             'email',
             'role',
             'bio',
             'first_name',
             'last_name',
-        )
+        ]
 
 
 class UserMeSerializer(UserSerializer):
