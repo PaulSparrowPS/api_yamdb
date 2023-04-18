@@ -1,11 +1,12 @@
 from django.contrib import admin
 
-from .models import Category, Comment, Genre, Review, Title, User
+from .models import Category, Comment, Genre, GenreTitle, Review, Title, User
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
         'name',
         'slug',
     )
@@ -17,19 +18,21 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
         'review',
         'text',
         'author',
         'pub_date',
     )
     search_fields = ('review',)
-    list_filter = ('review',)
+    list_filter = ('author',)
     empty_value_display = '-пусто-'
 
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
         'name',
         'slug',
     )
@@ -38,15 +41,26 @@ class GenreAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+@admin.register(GenreTitle)
+class GenreTitleAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'title',
+        'genre'
+    )
+
+
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
         'title',
         'text',
         'author',
         'score',
+        'pub_date',
     )
-    search_fields = ('pub_date',)
+    search_fields = ('text',)
     list_filter = ('pub_date',)
     empty_value_display = '-пусто-'
 
@@ -54,27 +68,29 @@ class ReviewAdmin(admin.ModelAdmin):
 @admin.register(Title)
 class TitleAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
         'name',
         'year',
         'category',
+        'get_genre',
         'description',
     )
     search_fields = ('name',)
-    list_filter = ('name',)
+    list_filter = ('year',)
     empty_value_display = '-пусто-'
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
         'username',
         'email',
-        'role',
         'bio',
+        'role',
         'first_name',
         'last_name',
-        'confirmation_code',
     )
-    search_fields = ('username', 'role',)
-    list_filter = ('username',)
+    search_fields = ('username',)
+    list_filter = ('role',)
     empty_value_display = '-пусто-'

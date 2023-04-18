@@ -18,6 +18,9 @@ API предоставляет возможность взаимодейство
   - просматривать комментарии к своему и другим отзывам
   - просматривать произведения, категории и жанры произведений
 
+Перечень запросов к ресурсу можно посмотреть в описании API после настройки и запуска проекта
+http://127.0.0.1:8000/redoc/
+
 ---
 ## 2. Команды для запуска <a id=2></a>
 
@@ -63,6 +66,6 @@ python3 manage.py runserver
 ---
 ## 4. Команда разработки <a id=4></a>
 
-- [PaulSparrowPS](https://github.com/PaulSparrowPS)
-- [Grigoriev1991](https://github.com/Grigoriev1991)  
-- [Toniccc](https://github.com/Toniccc)
+- [Павел Воробьёв](https://github.com/PaulSparrowPS)
+- [Александр Григорьев](https://github.com/Grigoriev1991)  
+- [Антон Дунайкин](https://github.com/Toniccc)
