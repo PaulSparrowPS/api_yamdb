@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
+
 from reviews.models import Category, Genre, Review, Title, User, Comment
 from reviews.validators import validate_username
 
@@ -18,7 +19,6 @@ class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         exclude = ('id',)
         model = Category
-        lookup_field = 'slug'
 
 
 class ReviewSerializer(serializers.ModelSerializer):

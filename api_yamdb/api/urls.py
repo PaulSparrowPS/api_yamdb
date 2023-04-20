@@ -5,15 +5,15 @@ from .views import (CategoryViewSet, CommentViewSet, GenreViewSet,
                     ReviewViewSet, TitleViewSet, UserviewSet,
                     send_confirmation_code, get_jwt_token)
 
-router = DefaultRouter()
-router.register('categories', CategoryViewSet)
-router.register('genres', GenreViewSet)
-router.register('titles', TitleViewSet)
-router.register(r'titles/(?P<title_id>\d+)/reviews',
-                ReviewViewSet, basename='reviews')
-router.register(r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)'
-                '/comments', CommentViewSet, basename='comments')
-router.register('users', UserviewSet)
+router_v1 = DefaultRouter()
+router_v1.register('categories', CategoryViewSet)
+router_v1.register('genres', GenreViewSet)
+router_v1.register('titles', TitleViewSet)
+router_v1.register(r'titles/(?P<title_id>\d+)/reviews',
+                   ReviewViewSet, basename='reviews')
+router_v1.register(r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)'
+                   '/comments', CommentViewSet, basename='comments')
+router_v1.register('users', UserviewSet)
 
 auth = [
     path('signup/', send_confirmation_code),
@@ -21,6 +21,6 @@ auth = [
 ]
 
 urlpatterns = [
-    path('v1/', include(router.urls)),
+    path('v1/', include(router_v1.urls)),
     path('v1/auth/', include(auth)),
 ]

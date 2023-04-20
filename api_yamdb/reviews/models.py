@@ -4,14 +4,14 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 from reviews.validators import validate_year, validate_username
 
+PRE_TEXT_LEN: int = 15
+
 
 class User(AbstractUser):
     USER = 'user'
     MODERATOR = 'moderator'
     ADMIN = 'admin'
-    ANON = 'anon'
     ROLE_CHOICES = [
-        ('anon', ANON),
         ('admin', ADMIN),
         ('moderator', MODERATOR),
         ('user', USER)
@@ -209,7 +209,8 @@ class Review(models.Model):
         ]
 
     def __str__(self):
-        return f'Произведение - {self.title}, отзыв - {self.text}'
+        return (f'Произведение - {self.title}, '
+                f'отзыв - { self.text[:PRE_TEXT_LEN] }')
 
 
 class Comment(models.Model):
@@ -240,4 +241,4 @@ class Comment(models.Model):
         verbose_name_plural = 'Комментарии'
 
     def __str__(self):
-        return f'{self.text}'
+        return f'{ self.text[:PRE_TEXT_LEN] }'

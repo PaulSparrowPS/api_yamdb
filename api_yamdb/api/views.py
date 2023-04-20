@@ -7,8 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, permissions, status, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
-from reviews.models import Category, Genre, Review, Title, User
+from rest_framework_simplejwt.tokens import AccessToken
 
 from .filters import TitleFilter
 from .viewsets import CreateDestroyListViewSet
@@ -18,6 +17,8 @@ from .serializers import (CategoriesSerializer, CommentSerializer,
                           GenreSerializer, ReadOnlyTitleSerializer,
                           ReviewSerializer, TitleSerializer, UserSerializer,
                           UserCreationSerializer, GetJWTSerializer)
+
+from reviews.models import Category, Genre, Review, Title, User
 
 
 @api_view(['POST'])
@@ -33,7 +34,6 @@ def send_confirmation_code(request):
         return Response(
             {'Такой username или e-mail уже используется.'},
             status=status.HTTP_400_BAD_REQUEST)
-    user = get_object_or_404(User, email=email)
     confirmation_code = default_token_generator.make_token(user)
     message = f'Код подтверждения: {confirmation_code}'
     mail_subject = 'Код подтверждения на YaMDb'
@@ -52,9 +52,8 @@ def get_jwt_token(request):
     confirmation_code = serializer.validated_data.get('confirmation_code')
     user = get_object_or_404(User, username=username)
     if default_token_generator.check_token(user, confirmation_code):
-        refresh = RefreshToken.for_user(user)
         return Response(
-            {'token': str(refresh.access_token)},
+            {'token': AccessToken.for_user(user)},
             status=status.HTTP_200_OK
         )
     return Response(

@@ -1,30 +1,100 @@
-import csv
+from csv import DictReader
 
-from django.conf import settings
 from django.core.management import BaseCommand
 
-from reviews.models import Category, Comment, Genre, Review, Title, User
+from reviews.models import User, Category, Genre, Comment, Title
+from reviews.models import GenreTitle, Review
 
-TABLES = {
-    User: 'users.csv',
-    Category: 'category.csv',
-    Genre: 'genre.csv',
-    Title: 'titles.csv',
-    Review: 'review.csv',
-    Comment: 'comments.csv',
-}
+MESSAGE = """
+-----------------------------------------------
+При необходиомсти загрузить данные из CSV файла,
+сперва удалить db.sqlite3 для сброса БД.
+Далее, использовать команду "python/python3 manage.py migrate --run-syncdb"
+для создания новых таблиц.
+-----------------------------------------------
+"""
 
 
 class Command(BaseCommand):
+    """Отображет юзеру информацию при вводе help."""
+    help = """
+    Загружает данные из titles.csv, category.csv,
+    genre.csv, genre_title.csv,
+    users.csv, review.csv, comments.csv """
 
-    def handle(self, *args, **kwargs):
-        for model, csv_f in TABLES.items():
-            with open(
-                f'{settings.BASE_DIR}/static/data/{csv_f}',
-                'r',
-                encoding='utf-8'
-            ) as csv_file:
-                reader = csv.DictReader(csv_file)
-                model.objects.bulk_create(
-                    model(**data) for data in reader)
-        self.stdout.write(self.style.SUCCESS('Все данные загружены'))
+    def handle(self, *args, **options):
+        print(MESSAGE)
+
+        """Отображет информацию о начале процесса импорта данных в БД."""
+        print('Начинаем импортировать данные в БД.')
+
+        """Код для импорта данных в БД."""
+        for row in DictReader(open('./static/data/users.csv')):
+            users = User(
+                id=row['id'],
+                username=row['username'],
+                email=row['email'],
+                role=row['role'],
+                bio=row['bio'],
+                first_name=row['first_name'],
+                last_name=row['last_name']
+            )
+            users.save()
+
+        for row in DictReader(open('./static/data/category.csv')):
+            categories = Category(
+                id=row['id'],
+                name=row['name'],
+                slug=row['slug']
+            )
+            categories.save()
+
+        for row in DictReader(open('./static/data/genre.csv')):
+            genres = Genre(
+                id=row['id'],
+                name=row['name'],
+                slug=row['slug']
+            )
+            genres.save()
+
+        for row in DictReader(open('./static/data/titles.csv',
+                                   encoding='utf8')):
+            titles = Title(
+                id=row['id'],
+                name=row['name'],
+                year=row['year'],
+                category=Category.objects.get(id=row['category']))
+            titles.save()
+
+        for row in DictReader(open('./static/data/genre_title.csv')):
+            genre_title = GenreTitle(
+                id=row['id'],
+                title=Title.objects.get(id=row['title_id']),
+                genre=Genre.objects.get(id=row['genre_id'])
+            )
+            genre_title.save()
+
+        for row in DictReader(open('./static/data/review.csv',
+                                   encoding='utf8')):
+            reviews = Review(
+                id=row['id'],
+                title=Title.objects.get(id=row['title_id']),
+                text=row['text'],
+                author=User.objects.get(id=row['author']),
+                score=row['score'],
+                pub_date=row['pub_date']
+            )
+            reviews.save()
+
+        for row in DictReader(open('./static/data/comments.csv')):
+            comments = Comment(
+                id=row['id'],
+                review=Review.objects.get(id=row['review_id']),
+                text=row['text'],
+                author=User.objects.get(id=row['author']),
+                pub_date=row['pub_date']
+            )
+            comments.save()
+
+        """Отображет информацию об окончании процесса импорта данных в БД."""
+        print('Закончили импортировать данные в БД.')
