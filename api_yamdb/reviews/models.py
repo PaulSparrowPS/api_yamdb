@@ -210,7 +210,7 @@ class Review(models.Model):
 
     def __str__(self):
         return (f'Произведение - {self.title}, '
-                f'отзыв - { self.text[:PRE_TEXT_LEN] }')
+                f'отзыв - {self.text[:PRE_TEXT_LEN]}')
 
 
 class Comment(models.Model):
@@ -241,4 +241,4 @@ class Comment(models.Model):
         verbose_name_plural = 'Комментарии'
 
     def __str__(self):
-        return f'{ self.text[:PRE_TEXT_LEN] }'
+        return f'{self.text[:PRE_TEXT_LEN]}'

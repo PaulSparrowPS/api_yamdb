@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg
+from django.db import IntegrityError
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.conf import settings
@@ -13,11 +14,10 @@ from .filters import TitleFilter
 from .viewsets import CreateDestroyListViewSet
 from .permissions import (IsAdminOrAuthorOrModerator, IsAdminUserOrReadOnly,
                           IsAdminOrMyselfOnly)
-from .serializers import (CategoriesSerializer, CommentSerializer,
+from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReadOnlyTitleSerializer,
                           ReviewSerializer, TitleSerializer, UserSerializer,
                           UserCreationSerializer, GetJWTSerializer)
-
 from reviews.models import Category, Genre, Review, Title, User
 
 
@@ -30,7 +30,7 @@ def send_confirmation_code(request):
         user, created = User.objects.get_or_create(
             **serializer.validated_data
         )
-    except Exception:
+    except IntegrityError:
         return Response(
             {'Такой username или e-mail уже используется.'},
             status=status.HTTP_400_BAD_REQUEST)
@@ -117,7 +117,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CategoryViewSet(CreateDestroyListViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategoriesSerializer
+    serializer_class = CategorySerializer
     permission_classes = (IsAdminUserOrReadOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
